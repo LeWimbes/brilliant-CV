@@ -510,6 +510,20 @@
   v(-6pt)
 }
 
+/// Add a skill tag to the CV.
+/// 
+/// - skill (str | content): The skill to be displayed.
+/// -> content
+#let cvSkillTag(skill) = {
+  box(
+    inset: (x: 0.5em, y: 0.5em),
+    stroke: 0.5pt + regularColors.lightgray,
+    radius: 3pt,
+    text(size: 10pt, weight: "regular", skill),
+  )
+  h(5pt)
+}
+
 /// Add a Honor to the CV.
 ///
 /// - date (str): The date of the honor.
