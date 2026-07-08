@@ -569,30 +569,34 @@
       )
     }
 
+    // The description and tags live inside the left `1fr` cell, beside the date column, rather than full-width below the table.
+    // This keeps the text at a readable width and prevents a tall multi-date column from creating a gap between the header and the description.
     table(
       columns: (1fr, date-width),
       inset: 0pt,
       stroke: 0pt,
       gutter: 6pt,
       align: (x, y) => if x == 1 { right } else { auto },
-      table(
-        columns: (if display-logo and logo != "" { 4% } else { 0% }, 1fr),
-        inset: 0pt,
-        stroke: 0pt,
-        align: horizon,
-        column-gutter: if display-logo and logo != "" { 4pt } else { 0pt },
-        if logo == "" [] else {
-          set image(width: 100%)
-          logo
-        },
-        stack(left-cells),
-      ),
+      {
+        table(
+          columns: (if display-logo and logo != "" { 4% } else { 0% }, 1fr),
+          inset: 0pt,
+          stroke: 0pt,
+          align: horizon,
+          column-gutter: if display-logo and logo != "" { 4pt } else { 0pt },
+          if logo == "" [] else {
+            set image(width: 100%)
+            logo
+          },
+          stack(left-cells),
+        )
+        if description != "" and description != none {
+          (styles.description)(description)
+        }
+        _create-entry-tag-list(tags, styles.tag)
+      },
       stack(right-cells),
     )
-    if description != "" and description != none {
-      (styles.description)(description)
-    }
-    _create-entry-tag-list(tags, styles.tag)
   } else if entry-type == "start" {
     // Entry start layout (original cv-entry-start logic)
     if display-logo and logo != "" {
@@ -626,51 +630,23 @@
     // and -10pt overlaps the next title (issue #172).
     v(if display-logo and logo != "" { -10pt } else { -6pt })
   } else if entry-type == "continued" {
-    // Entry continued layout (original cv-entry-continued logic)
-    // If the date contains a linebreak, use legacy side-to-side layout
-    let multiple-dates
-    if type(date) == content {
-      multiple-dates = if linebreak() in date.fields().children { true } else {
-        false
-      }
-    } else {
-      multiple-dates = false
-    }
-
-    if not multiple-dates {
-      table(
-        columns: (1fr, date-width),
-        inset: 0pt,
-        stroke: 0pt,
-        gutter: 6pt,
-        align: auto,
-        {
-          (styles.b1)(title)
-        },
-        (styles.b2)((styles.dates)(date)),
-      )
-      if description != "" and description != none {
-        (styles.description)(description)
-      }
-      _create-entry-tag-list(tags, styles.tag)
-    } else {
-      table(
-        columns: (1fr, date-width),
-        inset: 0pt,
-        stroke: 0pt,
-        gutter: 6pt,
-        align: auto,
-        {
-          (styles.b1)(title)
-          if description != "" and description != none {
-            (styles.description)(description)
-          }
-        },
-        (styles.b2)((styles.dates)(date)),
-      )
-      (styles.description)(description)
-      _create-entry-tag-list(tags, styles.tag)
-    }
+    // Entry continued layout (original cv-entry-continued logic).
+    // Like the full entry, the description and tags sit in the left `1fr` cell.
+    table(
+      columns: (1fr, date-width),
+      inset: 0pt,
+      stroke: 0pt,
+      gutter: 6pt,
+      align: auto,
+      {
+        (styles.b1)(title)
+        if description != "" and description != none {
+          (styles.description)(description)
+        }
+        _create-entry-tag-list(tags, styles.tag)
+      },
+      (styles.b2)((styles.dates)(date)),
+    )
   }
 }
 
