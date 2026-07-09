@@ -344,6 +344,34 @@ typst query cv.typ '<brilliant-cv>' --field value --input brilliant-cv-query=1
 
 Use it, for example, to find the entries that go to page 2, or to make sure that a cover letter has one page. Without the input, the package emits nothing, and the input does not change the layout. This function is experimental: the field names can change in a minor release. The `cv()` entry in the [API Reference](api-reference.md) lists all the fields.
 
+## Cover Letter with the CV Header
+
+To open the letter with the same header the CV uses instead of the classic sender-address block, set `header_style` in the profile metadata:
+
+```toml
+[layout.letter]
+header_style = "cv"
+```
+
+The sender's postal address is dropped, and the recipient block, date and subject move below the header, left-aligned:
+
+```typ
+#import "@preview/brilliant-cv:4.1.1": letter
+
+#let metadata = toml("metadata.toml")
+
+#show: letter.with(
+  metadata,
+  recipient-name: "Company Name Here",
+  recipient-address: "456 Market St" + "\n" + "New York, NY 10001",
+  date: datetime.today().display(),
+  subject: "Subject: Hey!",
+  profile-photo: image("assets/avatar.png", alt: "Profile photo"),
+)
+
+Dear Hiring Manager,
+```
+
 ## CI/CD with GitHub Actions
 
 This is a minimal workflow that compiles your CV on each push:

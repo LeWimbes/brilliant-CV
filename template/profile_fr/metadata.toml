@@ -24,6 +24,9 @@ letter_footer = "Lettre de motivation"
         profile_photo_radius = "50%"
         info_font_size = "10pt"
 
+    [layout.letter]
+        header_style = "classic"
+
     [layout.entry]
         display_entry_society_first = true
         display_logo = true

@@ -61,6 +61,15 @@ Your content inherits the normal typography and accent color of the header info.
 
 `letter()` is equivalent to `cv()` for cover-letter pages. It uses formal letter margins and a 12pt body. The `[layout] font_size` field applies only to the CV. To change the size of the letter body, add a `set` rule after the `show` rule, for example `#set text(size: 11pt)`. This rule changes only the body text. The header and the footer keep their sizes. The default value of `sender-address` is `auto`, which reads `metadata.personal.address`. If that field is not set, the value becomes `"Your Address Here"`. To remove the smallcaps from the addresses, use `address-style: "normal"`. To keep the closing lines with the signature image, see [Cover Letter with Signature](recipes.md#cover-letter-with-signature).
 
+The header comes in two styles, selected by `[layout.letter] header_style` in the profile metadata:
+
+| `header_style` | Renders |
+| -------------- | ------- |
+| `"classic"` (default) | Sender name and postal address, a right-aligned recipient block, date, subject |
+| `"cv"` | The CV header above a left-aligned recipient block, date, subject |
+
+Under `"cv"` the sender's postal address is never rendered, so `sender-address` is ignored; in exchange `letter()` accepts `profile-photo:` and `custom-icons:` with the same meaning they have in `cv()`. An unrecognized `header_style` panics rather than falling back silently.
+
 ---
 
 ## CV Components

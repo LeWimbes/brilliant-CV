@@ -264,14 +264,20 @@
 /// `<brilliant-cv>` element of kind `document` with its page count (see
 /// `cv()`).
 ///
+/// The header style is selected by `[layout.letter] header_style` in the profile metadata:
+/// - `"classic"` (default) renders the sender name and postal address above a right-aligned recipient block,
+/// - `"cv"` reuses the CV header (big name, contact line, tagline, optional photo) and ignores `sender-address` entirely.
+///
 /// - metadata (dictionary): The metadata dictionary read from `metadata.toml`.
 /// - doc (content): The body content of the letter.
-/// - sender-address (str | content | auto): The sender's mailing address. Defaults to `auto`, which reads from `metadata.personal.address` (falls back to `"Your Address Here"` if unset). Pass a string or content to override.
+/// - sender-address (str | content | auto): The sender's mailing address. Defaults to `auto`, which reads from `metadata.personal.address` (falls back to `"Your Address Here"` if unset). Pass a string or content to override. Unused when `header_style = "cv"`.
 /// - recipient-name (str): The recipient's name or company displayed in the header.
 /// - recipient-address (str): The recipient's mailing address displayed in the header. Supports multiline content.
 /// - date (str): The date displayed in the letter header. Defaults to today's date.
 /// - subject (str): The subject line of the letter.
 /// - signature (str | content | none): (optional) content to display as the signature. Pass `image("signature.png", alt: "Signature")` for an image; a string is rendered as text. The signature reserves its height: when it does not fit below the body, it moves to the next page. `""` or `none` omits it.
+/// - profile-photo (image | none): The profile photo to display in the header. Only used when `header_style = "cv"`; behaves as in `cv()`.
+/// - custom-icons (dictionary): Custom icons to override or extend the default icon set. Only used when `header_style = "cv"`.
 /// - address-style (str): Address rendering style. `"smallcaps"` (default) or `"normal"`.
 /// -> content
 #let letter(
@@ -283,15 +289,32 @@
   date: datetime.today().display(),
   subject: "Subject: Hey!",
   signature: "",
+  profile-photo: none,
+  custom-icons: (:),
   address-style: "smallcaps",
 ) = {
   _check-v3-legacy(metadata)
   _check-v2-inject-legacy(metadata)
 
-  // Resolve sender-address: auto reads from metadata, explicit value overrides
+  let header-style = metadata
+    .layout
+    .at("letter", default: (:))
+    .at("header_style", default: "classic")
+  if header-style not in ("classic", "cv") {
+    panic(
+      "[layout.letter] header_style must be \"classic\" or \"cv\", got \""
+        + header-style
+        + "\".",
+    )
+  }
+
   show: _with-document-info.with(_identity._document-info(metadata, subject))
 
-  let sender-address = if sender-address == auto {
+  // Resolve sender-address: auto reads from metadata, explicit value overrides.
+  // The cv header style never renders it, so skip the lookup there.
+  let sender-address = if header-style == "cv" {
+    none
+  } else if sender-address == auto {
     metadata.personal.at("address", default: "Your Address Here")
   } else {
     sender-address
@@ -321,7 +344,12 @@
     date: date,
     subject: subject,
     metadata: metadata,
+    profile-photo: profile-photo,
+    header-font: typography.header-font,
+    regular-colors: _styles._regular-colors,
     awesome-colors: _styles._awesome-colors,
+    custom-icons: custom-icons,
+    header-style: header-style,
     address-style: address-style,
   )
   doc
