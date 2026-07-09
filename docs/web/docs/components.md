@@ -30,6 +30,15 @@ The `cv()` function is the main entry point. It runs schema-migration guards (pa
 
 `letter()` mirrors `cv()` for cover-letter pages with letter-formal margins and a 12pt body. `sender-address` defaults to `auto`, which reads `metadata.personal.address` (falls back to `"Your Address Here"` if unset). Use `address-style: "normal"` to disable smallcaps on addresses.
 
+The header comes in two styles, selected by `[layout.letter] header_style` in the profile metadata:
+
+| `header_style` | Renders |
+| -------------- | ------- |
+| `"classic"` (default) | Sender name and postal address, a right-aligned recipient block, date, subject |
+| `"cv"` | The CV header above a left-aligned recipient block, date, subject |
+
+Under `"cv"` the sender's postal address is never rendered, so `sender-address` is ignored; in exchange `letter()` accepts `profile-photo:` and `custom-icons:` with the same meaning they have in `cv()`. An unrecognized `header_style` panics rather than falling back silently.
+
 ---
 
 ## CV Components

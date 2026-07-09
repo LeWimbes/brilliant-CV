@@ -188,6 +188,34 @@ Sincerely,
 
 Leave `signature` as `""` (default) to omit the signature image.
 
+## Cover Letter with the CV Header
+
+To open the letter with the same header the CV uses instead of the classic sender-address block, set `header_style` in the profile metadata:
+
+```toml
+[layout.letter]
+header_style = "cv"
+```
+
+The sender's postal address is dropped, and the recipient block, date and subject move below the header, left-aligned:
+
+```typ
+#import "@preview/brilliant-cv:4.0.1": letter
+
+#let metadata = toml("metadata.toml")
+
+#show: letter.with(
+  metadata,
+  recipient-name: "Company Name Here",
+  recipient-address: "456 Market St" + "\n" + "New York, NY 10001",
+  date: datetime.today().display(),
+  subject: "Subject: Hey!",
+  profile-photo: image("assets/avatar.png"),
+)
+
+Dear Hiring Manager,
+```
+
 ## CI/CD with GitHub Actions
 
 A minimal workflow to compile your CV on every push:

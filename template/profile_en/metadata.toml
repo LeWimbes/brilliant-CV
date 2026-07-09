@@ -56,6 +56,14 @@ letter_footer = "Cover letter"
         # Font size for the contact-info line (email, phone, links) in the header
         info_font_size = "10pt"
 
+    [layout.letter]
+        # Cover letter header style:
+        #   "classic" (default) - sender name + postal address, right-aligned
+        #                         recipient block, date, subject
+        #   "cv"                - reuse the CV header (big name, contact line,
+        #                         tagline, photo); the sender address is dropped
+        header_style = "classic"
+
     [layout.entry]
         # true = company name bold on top, role below; false = role bold on top
         # Must be true to use cv-entry-start / cv-entry-continued pattern

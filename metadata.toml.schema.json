@@ -94,6 +94,17 @@
             "display_profile_photo"
           ]
         },
+        "letter": {
+          "type": "object",
+          "description": "Cover-letter-specific layout options.",
+          "properties": {
+            "header_style": {
+              "type": "string",
+              "enum": ["classic", "cv"],
+              "description": "'classic' (default) renders the sender name + postal address, right-aligned recipient block, date and subject. 'cv' reuses the CV header (big name, contact line, tagline, photo) and drops the sender address."
+            }
+          }
+        },
         "entry": {
           "type": "object",
           "properties": {
