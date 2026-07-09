@@ -1060,12 +1060,16 @@
   let skill-info-style(str) = _part("skill-info", (:), _state-parts, str)
   let skill-level-style(str) = {
     set text(size: 10pt, fill: _regular-colors.darkgray)
-    for x in range(0, level) {
-      [#fa-icon("circle", solid: true) ]
-    }
-    for x in range(level, 5) {
-      [#fa-icon("circle") ]
-    }
+    // Font Awesome's circle glyph sits below the text's optical centre.
+    // Nudge them up so they sit vertically centred.
+    move(dy: -2.5pt)[#{
+      for x in range(0, level) {
+        [#fa-icon("circle", solid: true) ]
+      }
+      for x in range(level, 5) {
+        [#fa-icon("circle") ]
+      }
+    }]
   }
 
   grid(
